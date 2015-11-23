@@ -1,3 +1,9 @@
+
+0.4.6
+=====
+
+Modifed to run with Python 3
+
 0.4.5
 =====
 

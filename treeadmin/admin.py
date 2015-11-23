@@ -56,7 +56,7 @@ def _build_tree_structure(cls):
         all_nodes[p_id] = []
 
         if parent_id:
-            if not all_nodes.has_key(parent_id):
+            if not parent_id in all_nodes:
                 # This happens very rarely, but protect against parents that
                 # we have yet to iterate over.
                 all_nodes[parent_id] = []
@@ -133,7 +133,7 @@ class ChangeList(main.ChangeList):
 
     def get_queryset(self, *args, **kwargs):
         mptt_opts = self.model._mptt_meta
-        get_qs = getattr(super(ChangeList, self), 'get_queryset', super(ChangeList, self).get_query_set)
+        get_qs = getattr(super(ChangeList, self), 'get_queryset', super(ChangeList, self).get_queryset)
         return get_qs(*args, **kwargs).order_by(mptt_opts.tree_id_attr, mptt_opts.left_attr)
 
     if django_version < (1, 6):
@@ -163,7 +163,7 @@ class ChangeList(main.ChangeList):
         super(ChangeList, self).get_results(request)
 
         opts = self.model_admin.opts
-        label = opts.app_label + '.' + opts.get_change_permission()
+        label = opts.app_label
         for item in self.result_list:
             if self.model_admin.enable_object_permissions:
                 item.feincms_editable = self.model_admin.has_change_permission(request, item)
@@ -289,7 +289,7 @@ class TreeAdmin(admin.ModelAdmin):
 
         self._collect_editable_booleans()
 
-        if not self._ajax_editable_booleans.has_key(attr):
+        if not attr in self._ajax_editable_booleans:
             return HttpResponseBadRequest("not a valid attribute %s" % attr)
 
         try:
